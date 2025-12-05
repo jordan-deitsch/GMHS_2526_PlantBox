@@ -18,7 +18,9 @@ TB6612 SparkFun Library
 ******************************************************************************/
 
 // This is the library for the TB6612 that contains the Motor class and functions
-#include "SparkFun_TB6612.h"
+#include "src/tb6612/SparkFun_TB6612.h"
+#include "src/bma400/SparkFun_BMA400_Arduino_Library.h"
+#include <Wire.h>
 
 // Motor driver digital pins (UPDATE FOR YOUR DESIGN)
 #define AIN1 (8)
@@ -40,21 +42,46 @@ const int MEASUREMENT_DELAY_MIN	= 1;			// Delay time before checking moisture se
 // Define variables used in main loop
 int moisture_value = 0;		// Measured value from analog input of moisture sensor
 int motor_active_time = 0;	// Track active time of motor to know how far lead screw is extended
-unsigned long measure_delay_time = 60*1000*MEASUREMENT_DELAY_MIN;	// Convert delay time to msec
 
 // Change to set default direction of motor (CW or CCW) instead of switching wires. Value can be 1 or -1
 const int offsetA = 1;
 
-// Initialize motor with board pin numbers
+// Create a new motor object
 Motor motor1 = Motor(AIN1, AIN2, PWMA, offsetA, STBY);
+
+// Create a new accelerometer sensor object
+BMA400 accelerometer;
+
+// I2C address selection
+const uint8_t i2cAddress = BMA400_I2C_ADDRESS_DEFAULT; // 0x14
+
+// Declare time tracking variables
+unsigned long StartTime = 0;
+unsigned long CurrentTime = 0;
 
 
 void setup()
 {
-	Serial.begin(9600);		// Start serial port to print actions
-	motor1.standby();			// Start motor in standy condition
+	Serial.begin(115200);		// Start serial port to print actions
+	motor1.standby();				// Start motor in standy condition
+	Wire.begin();						// Initialize the I2C library
+
+	// Check if sensor is connected and initialize
+	// Address is optional (defaults to 0x14)
+	while(accelerometer.beginI2C(i2cAddress) != BMA400_OK)
+	{
+		// Not connected, inform user
+		Serial.println("Error: BMA400 not connected, check wiring and I2C address!");
+
+		// Wait a bit to see if connection is established
+		delay(1000);
+	}
+
+	Serial.println("BMA400 connected!");
 
 	// TODO: Setup for any other I/O pins: lights? Other controls?
+
+
 }
 
 
@@ -81,7 +108,6 @@ void loop()
 		motor_active_time = 0;	// Reset active time tracker after motor returned to starting position
 	}
 
-	// Wait for the desired time before taking  next moisture measurement
-	measure_delay_time = 1000;	// TEMPORARY: loop every second during testing to speed up development
-	delay(measure_delay_time);
+	// Wait before taking next moisture measurement
+	delay(1000);
 }

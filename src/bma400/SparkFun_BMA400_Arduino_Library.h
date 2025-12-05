@@ -5,7 +5,7 @@
 #include <Wire.h>
 #include <SPI.h>
 
-#include "bma400_api/bma400.h"
+#include "bma400.h"
 
 // SparkFun's default and secondary I2C addresses
 #define BMA400_I2C_ADDRESS_DEFAULT BMA400_I2C_ADDRESS_SDO_LOW    // 0x14

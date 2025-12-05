@@ -3429,8 +3429,8 @@ static void unpack_sensortime_frame(struct bma400_fifo_data *fifo, uint16_t *dat
     uint16_t time_lsb;
     uint8_t time_xlsb;
 
-    time_msb = fifo->data[(*data_index) + 2] << 16;
-    time_lsb = fifo->data[(*data_index) + 1] << 8;
+    time_msb = (uint32_t)fifo->data[(*data_index) + 2] << 16;
+    time_lsb = (uint16_t)fifo->data[(*data_index) + 1] << 8;
     time_xlsb = fifo->data[(*data_index)];
 
     /* Sensor time */
