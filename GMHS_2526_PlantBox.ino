@@ -55,28 +55,19 @@ BMA400 accelerometer;
 // I2C address selection
 const uint8_t i2cAddress = BMA400_I2C_ADDRESS_DEFAULT; // 0x14
 
-// Declare time tracking variables
-unsigned long StartTime = 0;
-unsigned long CurrentTime = 0;
-
 
 void setup()
 {
 	Serial.begin(115200);		// Start serial port to print actions
-	motor1.standby();				// Start motor in standy condition
 	Wire.begin();						// Initialize the I2C library
+	motor1.standby();				// Start motor in standy condition
 
 	// Check if sensor is connected and initialize
-	// Address is optional (defaults to 0x14)
 	while(accelerometer.beginI2C(i2cAddress) != BMA400_OK)
 	{
-		// Not connected, inform user
 		Serial.println("Error: BMA400 not connected, check wiring and I2C address!");
-
-		// Wait a bit to see if connection is established
 		delay(1000);
 	}
-
 	Serial.println("BMA400 connected!");
 
 	// TODO: Setup for any other I/O pins: lights? Other controls?
