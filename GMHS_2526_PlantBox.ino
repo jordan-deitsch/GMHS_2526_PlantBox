@@ -43,6 +43,7 @@ void setup()
 
 	// TODO: Setup for any other I/O pins: lights? fan? Other controls?
 
+	// Setup all timed functions with expiration timer and callback
 	setup_timed_functions();
 }
 
