@@ -4,7 +4,7 @@
 #include "PinDefs.h"
 #include "tb6612/SparkFun_TB6612.h"
 
-// Create a new motor object
+// Declare a new motor object
 extern Motor motor1;
 
 // Functions

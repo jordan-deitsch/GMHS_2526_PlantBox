@@ -1,21 +1,23 @@
 #ifndef TIMED_FUNCTION_H
 #define TIMED_FUNCTION_H
 
+#include "MotorDriver.h"
+#include "AccelerometerDriver.h"
+
 #define NUM_TIMED_FUNCTIONS (2)
 
-typedef struct TimedFunction
+typedef void (*TimedFuctionPtr)();
+
+struct TimedFunction
 {
   unsigned long expire_time;
   unsigned long start_time;
-  void* function_ptr;
+  TimedFuctionPtr callback;
 };
 
-// Available timed functions
-TimedFunction check_moisture;
-TimedFunction check_accelerometer;
-TimedFunction toggle_lights;
-TimedFunction toggle_fan;
+extern TimedFunction* timed_function_arr[NUM_TIMED_FUNCTIONS];
 
-TimedFunction* timed_function_arr[NUM_TIMED_FUNCTIONS];
+// Fucntions
+void setup_timed_functions();
 
 #endif
