@@ -1,23 +1,3 @@
-/******************************************************************************
-GMHS_2526_PlantBox.ino
-Arduino controller for plant box sensors and motors
-
-Modified from:
-TB6612FNG H-Bridge Motor Driver Example code
-Michelle @ SparkFun Electronics
-8/20/16
-https://github.com/sparkfun/SparkFun_TB6612FNG_Arduino_Library
-
-Uses 1 motor and 1 moisture sensor to add moisture to a plant grow-bed.
-Activate the motor for a finite time when the moisture drops below a 
-minimum threshold to extend lead screw. Retract the motor lead screw 
-when fully extended to allow for removal/replacement of water bag.
-
-Resources:
-TB6612 SparkFun Library
-******************************************************************************/
-
-// This is the library for the TB6612 that contains the Motor class and functions
 #include "src/tb6612/SparkFun_TB6612.h"
 #include "src/bma400/SparkFun_BMA400_Arduino_Library.h"
 #include <Wire.h>
