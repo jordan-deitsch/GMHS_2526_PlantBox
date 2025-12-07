@@ -17,7 +17,8 @@ struct TimedFunction
 
 extern TimedFunction* timed_function_arr[NUM_TIMED_FUNCTIONS];
 
-// Fucntions
+// Functions
 void setup_timed_functions();
+void check_timed_functions();
 
 #endif

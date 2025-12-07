@@ -24,6 +24,7 @@ BMA400 SparkFun Library
 // This is the library for the TB6612 that contains the Motor class and functions
 #include "src/MotorDriver.h"
 #include "src/AccelerometerDriver.h"
+#include "src/TimedFunction.h"
 #include <Wire.h>
 
 void setup()
@@ -41,13 +42,12 @@ void setup()
 	Serial.println("BMA400 connected!");
 
 	// TODO: Setup for any other I/O pins: lights? fan? Other controls?
+
+	setup_timed_functions();
 }
 
 
 void loop()
 {
-	MotorDriver_check_moisture();
-
-	// Wait before taking next moisture measurement
-	delay(1000);
+	check_timed_functions();
 }
