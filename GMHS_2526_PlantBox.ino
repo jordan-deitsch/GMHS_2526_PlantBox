@@ -23,7 +23,6 @@ void setup()
 	setup_timed_functions();
 }
 
-
 void loop()
 {
 	check_timed_functions();
