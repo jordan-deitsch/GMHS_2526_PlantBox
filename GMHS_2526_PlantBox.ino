@@ -10,6 +10,7 @@
 
 // Moisture sensor analog input pin (UPDATE FOR YOUR DESIGN)
 #define MOISTURE_SENSOR (A0)
+
 // TODO: Add more sensor definitions as needed (temperature, humidity, etc.)
 
 // Constants for moisture sensor and motor operation (UPDATE FOR YOUR DESIGN)
@@ -21,7 +22,6 @@ const int MEASUREMENT_DELAY_MIN	= 1;			// Delay time before checking moisture se
 
 // Define variables used in main loop
 int moisture_value = 0;		// Measured value from analog input of moisture sensor
-int motor_active_time = 0;	// Track active time of motor to know how far lead screw is extended
 
 // Change to set default direction of motor (CW or CCW) instead of switching wires. Value can be 1 or -1
 const int offsetA = 1;
@@ -42,8 +42,12 @@ void getAccelerometerData();
 void setup()
 {
 	Serial.begin(115200);		// Start serial port to print actions
-	Wire.begin();						// Initialize the I2C library
 	motor1.standby();				// Start motor in standy condition
+	
+	// Setup I2C bus with 3V3 logic compatability
+	Wire.begin();						// Initialize the I2C bus
+	pinMode(SDA, INPUT);		// Deactivate 5V pull-up set in Wire.begin()
+	pinMode(SCL, INPUT);		// Deactivate 5V pull-up set in Wire.begin()
 
 	// Check if accelerometer is connected and initialize
 	while(accelerometer.beginI2C(i2cAddress) != BMA400_OK)
@@ -61,7 +65,7 @@ void loop()
 	checkMoisture();
 	getAccelerometerData();
 
-	// Wait before taking next moisture measurement
+	// Wait 1 sec before repeating loop
 	delay(1000);
 }
 
@@ -77,15 +81,6 @@ void checkMoisture()
 		Serial.println("--> RUNNING MOTOR");
 		motor1.drive(MOTOR_SPEED, 1000*MOTOR_ON_TIME_SEC);
 		motor1.brake();
-		motor_active_time += MOTOR_ON_TIME_SEC;	// Increment tracker for active motor time
-	}
-
-	// Check if motor has reached its maximum active time (screw is fully extended)
-	if(motor_active_time > MOTOR_MAX_TIME_SEC) {
-		Serial.println("--> REVERSING MOTOR");
-		motor1.drive(-1*MOTOR_SPEED, 1000*motor_active_time);	// Use negative speed for reverse
-		motor1.brake();
-		motor_active_time = 0;	// Reset active time tracker after motor returned to starting position
 	}
 }
 
@@ -106,7 +101,4 @@ void getAccelerometerData()
 	Serial.print("\t");
 	Serial.print("Z: ");
 	Serial.println(accelerometer.data.accelZ, 3);
-
-	// Print 50x per second
-	delay(20);
 }
