@@ -55,6 +55,9 @@ BMA400 accelerometer;
 // I2C address selection
 const uint8_t i2cAddress = BMA400_I2C_ADDRESS_DEFAULT; // 0x14
 
+// Functions
+void checkMoisture();
+void getAccelerometerData();
 
 void setup()
 {
@@ -62,7 +65,7 @@ void setup()
 	Wire.begin();						// Initialize the I2C library
 	motor1.standby();				// Start motor in standy condition
 
-	// Check if sensor is connected and initialize
+	// Check if accelerometer is connected and initialize
 	while(accelerometer.beginI2C(i2cAddress) != BMA400_OK)
 	{
 		Serial.println("Error: BMA400 not connected, check wiring and I2C address!");
@@ -71,12 +74,18 @@ void setup()
 	Serial.println("BMA400 connected!");
 
 	// TODO: Setup for any other I/O pins: lights? Other controls?
-
-
 }
 
-
 void loop()
+{
+	checkMoisture();
+	getAccelerometerData();
+
+	// Wait before taking next moisture measurement
+	delay(1000);
+}
+
+void checkMoisture()
 {
 	// Read moisture sensor value
 	moisture_value = analogRead(MOISTURE_SENSOR);
@@ -98,7 +107,26 @@ void loop()
 		motor1.brake();
 		motor_active_time = 0;	// Reset active time tracker after motor returned to starting position
 	}
+}
 
-	// Wait before taking next moisture measurement
-	delay(1000);
+void getAccelerometerData()
+{
+	// Get measurements from the sensor. This must be called before accessing
+	// the acceleration data, otherwise it will never update
+	accelerometer.getSensorData();
+
+	// Print acceleration data
+	Serial.print("Acceleration in g's");
+	Serial.print("\t");
+	Serial.print("X: ");
+	Serial.print(accelerometer.data.accelX, 3);
+	Serial.print("\t");
+	Serial.print("Y: ");
+	Serial.print(accelerometer.data.accelY, 3);
+	Serial.print("\t");
+	Serial.print("Z: ");
+	Serial.println(accelerometer.data.accelZ, 3);
+
+	// Print 50x per second
+	delay(20);
 }
