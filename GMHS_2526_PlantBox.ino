@@ -17,17 +17,10 @@
 const int MOISTURE_THRESHOLD 		= 150; 		// Threshold for moisture sensor to trigger motor, between [0, 255]
 const int MOTOR_SPEED 					= 100;		// Default speed of motor, between [0, 255]
 const int MOTOR_ON_TIME_SEC 		= 1;			// Deafult ON time of motor when activated (seconds)
-const int MOTOR_MAX_TIME_SEC 		= 100;  	// Maximum time the motor can spin before screw is fully extended (seconds)
-const int MEASUREMENT_DELAY_MIN	= 1;			// Delay time before checking moisture sensor each loop (minutes)
-
-// Define variables used in main loop
-int moisture_value = 0;		// Measured value from analog input of moisture sensor
-
-// Change to set default direction of motor (CW or CCW) instead of switching wires. Value can be 1 or -1
-const int offsetA = 1;
+const int MOTOR_OFFSET 					= 1;			// Set default direction of motor (CW or CCW). Value can be 1 or -1
 
 // Create a new motor object
-Motor motor1 = Motor(AIN1, AIN2, PWMA, offsetA, STBY);
+Motor motor1 = Motor(AIN1, AIN2, PWMA, MOTOR_OFFSET, STBY);
 
 // Create a new accelerometer sensor object
 BMA400 accelerometer;
@@ -72,7 +65,7 @@ void loop()
 void checkMoisture()
 {
 	// Read moisture sensor value
-	moisture_value = analogRead(MOISTURE_SENSOR);
+	int moisture_value = analogRead(MOISTURE_SENSOR);
 	Serial.print("Moisture Level: ");
 	Serial.println(moisture_value);
 
